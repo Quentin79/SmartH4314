@@ -40,7 +40,7 @@ echo -e "\n"
 
 echo "${bold}Starting Postgre container ....${normal}" 
 # On run le container qui aura le serveur python
-sudo docker run --name $postgre -e POSTGRES_PASSWORD=admin -d -p 5432:5432 postgres 
+sudo docker run --name $postgre -e POSTGRES_PASSWORD=admin -v "$PWD"/postgre:/postgre -d -p 5432:5432 postgres 
 checkResult
 echo -e "\n"
 sudo docker inspect $postgre | grep IPAddress
