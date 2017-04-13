@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: iso-8859-15 -*-
+
 from collections import namedtuple
 import pandas as pd
 import requests
@@ -9,12 +12,13 @@ from modifString import modifierString
 r = requests.get('https://download.data.grandlyon.com/ws/rdata/sit_sitra.sittourisme/all.json')
 text_obj = r.json()
 
-##Déf d'un tuple comprenant tous les champs d'une entrée du json
+##Def d'un tuple comprenant tous les champs d'une entree du json
 Evenement = namedtuple('Evenement', text_obj['fields'])
 
 ##Creation de la DataFrame de la premiere url
 data = pd.DataFrame([k for k in text_obj["values"]])
 frame = [data]
+
 
 ##On itere sur les next url
 nexturl = ''
