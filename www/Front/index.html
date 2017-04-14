@@ -96,7 +96,7 @@
 	  accessToken = response.authResponse.accessToken;
 	  
 	  
-	  document.getElementById('resultats').innerHTML = "<p>#RecommandationsTextuelles : </p>";
+	  document.getElementById('resultats').innerHTML = "<p>Nous vous recommandons : </p>";
 	  
 	  var btnLogOutFB = document.getElementById('btnFBLogout');
 	  btnLogOutFB.style.display='inline';
@@ -201,6 +201,7 @@ function logout() {
 	var map;
 	var address;
 	var name;
+	var prev_infowindow =false;
 	
       function initMap() {
 		
@@ -213,6 +214,7 @@ function logout() {
 		
 		document.getElementById('submit').addEventListener('click', function() {
 		  //treatmentTest();
+		  
 		  if(accessToken != undefined)
 		  { 
 			serverRequest();
@@ -220,6 +222,7 @@ function logout() {
 		  else {
 			alert("access Token undefined, connect to Facebook");
 		  }
+		  
         });
 
 
@@ -244,7 +247,8 @@ function logout() {
 	  }
 	  
 	
-			   
+			
+	
 	function treatment(JSONtab) {
 	
 		// Traitement du JSON
@@ -258,6 +262,7 @@ function logout() {
 			address = obj["adresse"];
 			address = address + ", Lyon";			
 			
+			document.getElementById('resultats').innerHTML += "<p>"+ nom + "</p>";
 			
 			(function(nom) {
 				geocoder.geocode( { 'address' : address }, function( results ) {
@@ -274,16 +279,22 @@ function logout() {
 					});
 					
 					marker.addListener('click', function() {
+						if( prev_infowindow ) {
+						   prev_infowindow.close();
+						}
+
+						prev_infowindow = infowindow;
+					
 						infowindow.open(map, marker);
 					});
 
 				});
 			})(nom);
 			
-		}
+		}	
 	}
 	
-	
+	 
 	function treatmentTest() {
 	
 		// Traitement du JSON
@@ -297,6 +308,7 @@ function logout() {
 			address = obj["adresse"];
 			address = address + ", Lyon";			
 			
+			document.getElementById('resultats').innerHTML += "<p>"+ nom + "</p>";
 			
 			(function(nom) {
 				geocoder.geocode( { 'address' : address }, function( results ) {
@@ -313,6 +325,12 @@ function logout() {
 					});
 					
 					marker.addListener('click', function() {
+						if( prev_infowindow ) {
+						   prev_infowindow.close();
+						}
+
+						prev_infowindow = infowindow;
+					
 						infowindow.open(map, marker);
 					});
 
