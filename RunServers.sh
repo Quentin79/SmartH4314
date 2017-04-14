@@ -28,7 +28,7 @@ echo -e "\n"
 
 # On run le front-end Apache 
 echo "${bold}Starting front-end Apache container ....${normal}" 
-sudo docker run --name $apachename -d  -p 8080:8080 -v "$PWD"/www:/usr/local/apache2/htdocs/ httpd:2.4
+sudo docker run --name $apachename -d  -p 80:80 -v "$PWD"/www:/usr/local/apache2/htdocs/ httpd:2.4
 checkResult
 echo -e "\n"
 
