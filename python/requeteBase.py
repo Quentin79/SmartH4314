@@ -9,13 +9,21 @@ from pg import DB
 from modifString import modifierString
 import json
 
-def fetchData (db, like):
-	like = modifierString(like)
-	q = db.query("SELECT nom,adresse FROM public.\"DataGL4\" WHERE nom_normalize like '%"+like+"%'")
-	print(q.dictresult())
+def fetchData (db, likes):
+	query = "SELECT nom,adresse FROM public.\"DataGL4\" WHERE "
+	for like in likes:
+		like = modifierString(like)
+		query += "nom_normalize like '%"+like+"%' or "
+	query +='1=2'
+	q=db.query(query)
+	#q = db.query("SELECT nom,adresse FROM public.\"DataGL4\" WHERE nom_normalize like '%"+like+"%'")
+	#q = db.query("SELECT nom,adresse FROM public.\"DataGL4\" WHERE nom_normalize like '%tetedor%'")
+	print(query)
 	print('\r\n');
 	print(json.dumps(q.dictresult()))
-	return q.dictresult()
+	return json.dumps(q.dictresult())
 
 
-fetchData(db,'Tête d\'or')
+#db = DB(dbname='postgres', host='172.17.0.4', port=5432, user='postgres', passwd='admin')
+#listLike = ['Tête d\'or', 'le patineur']
+#fetchData(db,listLike)
