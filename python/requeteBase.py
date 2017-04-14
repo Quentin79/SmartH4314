@@ -18,9 +18,9 @@ def fetchData (db, likes):
 	q=db.query(query)
 	#q = db.query("SELECT nom,adresse FROM public.\"DataGL4\" WHERE nom_normalize like '%"+like+"%'")
 	#q = db.query("SELECT nom,adresse FROM public.\"DataGL4\" WHERE nom_normalize like '%tetedor%'")
-	print(query)
-	print('\r\n');
-	print(json.dumps(q.dictresult()))
+	#print(query)
+	#print('\r\n');
+	#print(json.dumps(q.dictresult()))
 	return json.dumps(q.dictresult())
 
 
