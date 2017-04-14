@@ -22,7 +22,7 @@ class FacebookAPI:
 
     # Debug display of the json data
     def printdatarecovered(self, dataRecovered):
-        print(json.dumps(dataRecovered, sort_keys=True, indent=4, separators=(',', ': ')))
+        print(json.dumps(dataRecovered, sort_keys=True, indent=4, separators=(',', ': '),ensure_ascii=False))
 
     # Get the name of all the pages the user has liked
     def getNamesFromFacebookLikes(self):
