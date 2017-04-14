@@ -81,6 +81,7 @@
 
 <script>
   // This is called with the results from from FB.getLoginStatus().
+  var accessToken;
   function statusChangeCallback(response) {
     console.log('statusChangeCallback');
     console.log(response);
@@ -92,7 +93,8 @@
       // Logged into your app and Facebook.
       testAPI();
 	  
-	  var accessToken = response.authResponse.accessToken;
+	  accessToken = response.authResponse.accessToken;
+	  
 	  
 	  document.getElementById('resultats').innerHTML = "<p>#RecommandationsTextuelles : </p>";
 	  
@@ -210,8 +212,8 @@ function logout() {
 		geocoder = new google.maps.Geocoder();
 		
 		document.getElementById('submit').addEventListener('click', function() {
-		  treatment();
-		  //serverRequest();
+		  //treatment();
+		  serverRequest();
         });
 
 
@@ -221,6 +223,14 @@ function logout() {
 	function serverRequest() {
 			var xmlhttp = new XMLHttpRequest();
 			var url = "./";
+			
+			if(accessToken == undefined)
+			{ 
+				alert("access Token undefined, connect to Facebook");
+			}
+			else {
+				var params = "token="+accessToken;
+			}
 
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
@@ -229,14 +239,14 @@ function logout() {
 				}
 			};
 			xmlhttp.open("GET", url, true);
-			xmlhttp.send();
+			xmlhttp.send(params);
 	  }
 	  
-	function treatment() {
+	function treatment(JSONtab) {
 	
 		// Traitement du JSON
-		var JSONArray = '[{"nom":"Vélonaute Tête dOr", "adresse":"35 rue Tronchet"}, {"nom":"Hôtel Tête dOr", "adresse":"62 rue Garibaldi"}, {"nom": "Charpennes Tête d\'or", "adresse": "6 Rue Bellecombe"}, {"nom": "Le Jardin Botanique et la Roseraie au Parc de la Tête d\'Or", "adresse": "Parc de la tête d\'or"}]';
-		var JSONtab = JSON.parse(JSONArray);
+		//var JSONArray = '[{"nom":"Vélonaute Tête dOr", "adresse":"35 rue Tronchet"}, {"nom":"Hôtel Tête dOr", "adresse":"62 rue Garibaldi"}, {"nom": "Charpennes Tête d\'or", "adresse": "6 Rue Bellecombe"}, {"nom": "Le Jardin Botanique et la Roseraie au Parc de la Tête d\'Or", "adresse": "Parc de la tête d\'or"}]';
+		//var JSONtab = JSON.parse(JSONArray);
 		
 		for (var i = 0; i < JSONtab.length; i++){
 			var obj = JSONtab[i];
@@ -245,23 +255,28 @@ function logout() {
 			address = obj["adresse"];
 			address = address + ", Lyon";
 			
-			results = geocoder.geocode( { 'address': address}, function(results, status) {return results;});
-			
-			alert(results);
-			var marker = new google.maps.Marker({
-				map: map,
-				position: results[0].geometry.location,
-				title: obj["nom"]
-			});
-			
-			var infowindow = new google.maps.InfoWindow({
-				content: obj["nom"]
-			});
 
-			marker.addListener('click', function() {
-			  infowindow.open(map, marker);
+			geocoder.geocode( { 'address': address}, function(results, status) {
+			if (status == 'OK') {
+				var marker = new google.maps.Marker({
+					map: map,
+					position: results[0].geometry.location,
+					title: obj["nom"]
+				});
+				
+				var infowindow = new google.maps.InfoWindow({
+					content: obj["nom"]
+				});
+				marker.addListener('click', function() {
+					infowindow.open(map, marker);
+				});
+				marker.setMap(map);
+			} 
+			else {
+				alert('Geocode was not successful for the following reason: ' + status);
+			  }
 			});
-			marker.setMap(map);
+			
 			
 			//alert(name);
 			// Pour chaque marker on y ajoute le nom;
