@@ -1,5 +1,5 @@
 from flask import Flask
-from facebookAPI import getNamesFromFacebookLikes
+from FacebookAPI import FacebookAPI
 from pg import DB
 
 app = Flask(__name__)
@@ -8,7 +8,14 @@ app = Flask(__name__)
 def main(token):
 	
 	db = DB(dbname='postgres', host='172.17.0.4', port=5432, user='postgres', passwd='admin')
-	
-	likes=getNamesFromFacebookLikes(token)
+	myFacebook = FacebookAPI(access_token = token)
+	likes = myFacebook.getNamesFromFacebookLikes()
+
 	json_response=fetchData(db,likes)
+	#print (json_response)
 	return json_response
+
+
+@app.route('/test', methods=['GET', 'POST'])
+def main():
+	return "hello world"
