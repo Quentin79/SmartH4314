@@ -212,8 +212,14 @@ function logout() {
 		geocoder = new google.maps.Geocoder();
 		
 		document.getElementById('submit').addEventListener('click', function() {
-		  //treatment();
-		  serverRequest();
+		  //treatmentTest();
+		  if(accessToken != undefined)
+		  { 
+			serverRequest();
+		  }
+		  else {
+			alert("access Token undefined, connect to Facebook");
+		  }
         });
 
 
@@ -222,15 +228,10 @@ function logout() {
 	  // Recuperation du JSON via requete sur le serveur
 	function serverRequest() {
 			var xmlhttp = new XMLHttpRequest();
-			var url = "./";
+			var url = "./";		
 			
-			if(accessToken == undefined)
-			{ 
-				alert("access Token undefined, connect to Facebook");
-			}
-			else {
-				var params = "token="+accessToken;
-			}
+			var params = "token="+accessToken;
+			
 
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
@@ -242,6 +243,8 @@ function logout() {
 			xmlhttp.send(params);
 	  }
 	  
+	
+			   
 	function treatment(JSONtab) {
 	
 		// Traitement du JSON
@@ -253,62 +256,70 @@ function logout() {
 			nom = obj["nom"];
 			
 			address = obj["adresse"];
-			address = address + ", Lyon";
+			address = address + ", Lyon";			
 			
+			
+			(function(nom) {
+				geocoder.geocode( { 'address' : address }, function( results ) {
 
-			geocoder.geocode( { 'address': address}, function(results, status) {
-			if (status == 'OK') {
-				var marker = new google.maps.Marker({
-					map: map,
-					position: results[0].geometry.location,
-					title: obj["nom"]
+					var marker = new google.maps.Marker( {
+						map: map,
+						position: results[0].geometry.location,
+						title: nom,
+						animation: google.maps.Animation.DROP
+					});
+
+					var infowindow = new google.maps.InfoWindow({
+						content: nom
+					});
+					
+					marker.addListener('click', function() {
+						infowindow.open(map, marker);
+					});
+
 				});
-				
-				var infowindow = new google.maps.InfoWindow({
-					content: obj["nom"]
-				});
-				marker.addListener('click', function() {
-					infowindow.open(map, marker);
-				});
-				marker.setMap(map);
-			} 
-			else {
-				alert('Geocode was not successful for the following reason: ' + status);
-			  }
-			});
-			
-			
-			//alert(name);
-			// Pour chaque marker on y ajoute le nom;
+			})(nom);
 			
 		}
+	}
+	
+	
+	function treatmentTest() {
+	
+		// Traitement du JSON
+		var JSONArray = '[{"nom":"Vélonaute Tête dOr", "adresse":"35 rue Tronchet"}, {"nom":"Hôtel Tête dOr", "adresse":"62 rue Garibaldi"}, {"nom": "Charpennes Tête d\'or", "adresse": "6 Rue Bellecombe"}, {"nom": "Le Jardin Botanique et la Roseraie au Parc de la Tête d\'Or", "adresse": "Parc de la tête d\'or"}]';
+		var JSONtab = JSON.parse(JSONArray);
 		
-		
-		/*
-		// Pour chaque objet
-		for (var i = 0; i < JSONArray.length; i++){
-
-			var obj = JSONArray[i];
-			name = obj["nom"];
+		for (var i = 0; i < JSONtab.length; i++){
+			var obj = JSONtab[i];
+			nom = obj["nom"];
+			
 			address = obj["adresse"];
-			address = address + ", Lyon";
-		
-			geocoder.geocode( { 'address': address}, function(results, status) {
-			if (status == 'OK') {
-				var marker = new google.maps.Marker({
-					map: map,
-					position: results[0].geometry.location,
-					title: name
-				});
-				marker.setMap(map);
-			} 
-			else {
-				alert('Geocode was not successful for the following reason: ' + status);
-			  }
-			});
+			address = address + ", Lyon";			
 			
-		}
-		*/
+			
+			(function(nom) {
+				geocoder.geocode( { 'address' : address }, function( results ) {
+
+					var marker = new google.maps.Marker( {
+						map: map,
+						position: results[0].geometry.location,
+						title: nom,
+						animation: google.maps.Animation.DROP
+					});
+
+					var infowindow = new google.maps.InfoWindow({
+						content: nom
+					});
+					
+					marker.addListener('click', function() {
+						infowindow.open(map, marker);
+					});
+
+				});
+			})(nom);
+			
+		}				
 	}
 
 
