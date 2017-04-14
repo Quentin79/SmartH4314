@@ -12,6 +12,7 @@ function checkResult
 
 apachename="my-apache-app"
 pythonname="python-app"
+pythonimage="python-reco"
 postgre="some-postgres"
 pgadmin="some-pgadmin4"
 bold=$(tput bold)
@@ -26,6 +27,19 @@ sudo docker rm -f $postgre
 sudo docker rm -f $pgadmin
 echo -e "\n"
 
+echo "${bold}Building Python Image if not exists ....${normal}" 
+sudo docker images | grep $pythonimage
+
+if [ $? -ne 0 ]
+	then
+		sudo docker build -t $pythonimage .
+		checkResult
+	else
+		echo -e "\n Already exists"	
+fi
+
+
+
 # On run le front-end Apache 
 echo "${bold}Starting front-end Apache container ....${normal}" 
 sudo docker run --name $apachename -d  -p 80:80 -v "$PWD"/www:/usr/local/apache2/htdocs/ httpd:2.4
@@ -34,7 +48,7 @@ echo -e "\n"
 
 echo "${bold}Starting Back-end Python container ....${normal}" 
 # On run le container qui aura le serveur python
-sudo docker run -d --name $pythonname -d  -p 5000:5000 -v "$PWD"/python:/usr/src/myapp -w /usr/src/myapp python:2 bash /usr/src/myapp/entrypoint.sh
+sudo docker run -d -p 5000:5000 --name $pythonname -v "$PWD"/python:/usr/src/myapp $pythonimage flask run --host=0.0.0.0
 checkResult
 echo -e "\n"
 
