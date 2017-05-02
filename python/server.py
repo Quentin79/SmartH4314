@@ -7,7 +7,8 @@ sys.setdefaultencoding("utf-8")
 
 from flask import Flask
 from FacebookAPI import FacebookAPI
-from requeteBase import fetchData
+from requeteBase import fetchDataAll
+from requeteBase import fetchDataSingle
 from pg import DB
 from flask import request
 from flask import Response
@@ -23,21 +24,32 @@ def main(): #enlever token
 	db = DB(dbname='postgres', host='172.17.0.4', port=5432, user='postgres', passwd='admin')
 	myFacebook = FacebookAPI(access_token = token)
 	likes = myFacebook.getNamesFromFacebookLikes()
-	
-	#return json.dumps(likes)
-	#likes=['Tête dor']
-	json_response=fetchData(db,likes)
-	#print ('\r\n')
-	#print (json_response)
+
+	dict_reponse = {}
+	for like in likes :
+		rep = fetchDataSingle(db,like)
+		dict_reponse[like]=rep
+
+
+
 	reponse = Response("")
 	reponse.headers['Access-Control-Allow-Origin'] = '*'
-	reponse.data = json_response
+	reponse.data = json.dumps(json_response)
 	reponse.mimetype = "json"
 	return reponse
 
 
 @app.route('/test', methods=['GET', 'POST'])
 def main2():
+	db = DB(dbname='postgres', host='172.17.0.4', port=5432, user='postgres', passwd='admin')
+	result = getNoms(db)
+	return json.dumps(result) + str(len(result))
+	
+	
+	
+	
+
+def getNoms (db) :
 	return "hello world"
 
 
