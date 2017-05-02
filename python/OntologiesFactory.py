@@ -21,10 +21,13 @@ def requestIBM(noms) :
 
     r = requests.get('https://gateway.watsonplatform.net/natural-language-understanding/api/v1/analyze', params=parameters, auth=('dc479c4a-de18-4be3-9095-8bb3fc537b58','DuxBm28zBvaB'))
 
-    categories = r.json()['categories'][0]['label']
+    jsonObject = r.json()
+    listCtgr = []
 
-    listCtgr = categories.split('/')
-    listCtgr.pop(0)
+    if jsonObject['categories'] :
+      categories = jsonObject['categories'][0]['label']
+      listCtgr = categories.split('/')
+      listCtgr.pop(0)
 
     listCtgr.extend(['']*(5-len(listCtgr)))
 
