@@ -9,6 +9,9 @@ from flask import Flask
 from FacebookAPI import FacebookAPI
 from requeteBase import fetchData
 from pg import DB
+from flask import request
+from flask import Response
+import json
 
 app = Flask(__name__)
 
@@ -16,15 +19,21 @@ app = Flask(__name__)
 def main(): #enlever token
 	#token = 'EAACEdEose0cBADbHU92C4fP13NnLV9ZB7x7qqRiuF5W3fw6ZBZCFZBlx3QhuhgObNiGAJHL36pw8ujwLKkJAUwEIFJQ4zZAilMw3skQ5wOQLP3vk1ZBDgTDM8pbsNeMClB4Fla1EH6P3AiEwlIANC34SyZCSWGUTdsSZBaEWPyyB9K5ZAVDOZAFpOGetpKZCKhhIA8ZD'
 	token = request.args.get('token')
+	#return token
 	db = DB(dbname='postgres', host='172.17.0.4', port=5432, user='postgres', passwd='admin')
 	myFacebook = FacebookAPI(access_token = token)
 	likes = myFacebook.getNamesFromFacebookLikes()
-#	print (likes)
+	
+	#return json.dumps(likes)
 	#likes=['Tête dor']
 	json_response=fetchData(db,likes)
 	#print ('\r\n')
 	#print (json_response)
-	return json_response
+	reponse = Response("")
+	reponse.headers['Access-Control-Allow-Origin'] = '*'
+	reponse.data = json_response
+	reponse.mimetype = "json"
+	return reponse
 
 
 @app.route('/test', methods=['GET', 'POST'])
