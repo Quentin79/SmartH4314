@@ -96,13 +96,15 @@
 	  accessToken = response.authResponse.accessToken;
 	  
 	  
-	  document.getElementById('resultats').innerHTML = "<p>Nous vous recommandons : </p>";
+	  //document.getElementById('resultats').innerHTML = "<p>Nous vous recommandons : </p>";
 	  
 	  var btnLogOutFB = document.getElementById('btnFBLogout');
 	  btnLogOutFB.style.display='inline';
 	  
+	  
 	  var btnLogInFB = document.getElementById('btnFBLogin');
 	  btnLogInFB.style.display='none';
+	  
 	  
 
     } else {
@@ -170,7 +172,7 @@
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
       document.getElementById('status').innerHTML =
-        '<h4> Bienvenu ' + response.name  + " </h4> <br>" ;
+        ' <h2 class="section-heading"> <i class="glyphicon glyphicon-info-sign fa-fw orange"></i> '+ response.name +'</h2> <br> ';
 		return response.id;
     });
 	
@@ -180,7 +182,6 @@
 
 function fb_login() {
     FB.login( function() { 	
-	//treatment();
 	window.location.reload();}, { scope: 'email,public_profile,user_likes' } );
 }
 
@@ -204,30 +205,88 @@ function logout() {
 	var prev_infowindow =false;
 	
       function initMap() {
-		console.log("TEST 1");
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 13,
           center: {lat: 45.755, lng: 4.85}
         });
 		
 		geocoder = new google.maps.Geocoder();
-		
-		document.getElementById('submit').addEventListener('click', function() {
-		  //treatmentTest();
-		  
-		  if(accessToken != undefined)
+
+      }
+      
+      function lancementProfilage() {
+		if(accessToken != undefined)
 		  { 
-			  console.log("token valide");
-			serverRequest();
+			//$('#modalAttente').modal('show');
+			console.log("token valide");
+			// On vide la liste des resultats et les markers
+			document.getElementById('resultats').innerHTML = "";
+			clearMarkers();
+			// On lance processus
+			//serverRequest();
+			
+			var jsonRes2 = '{"HaloDestiny.net": [], "Les Op\u00e9rateurs": [], "Console": [],"AEDI": [{\"nom\": \"Saxe Gambetta Edison Appartement\", \"adresse\":'
++ '\"31 rue Edison\"}], "Pc": [{\"nom\": \"R\\u00e9sidence Cap Campus\",'
++ '\"adresse\": \"42-44 rue des Charmettes\"}, {\"nom\": \"Chambre'
++ 'Syndicale des Propri\\u00e9taires et Copropri\\u00e9taires (CSPC)\",'
++ '\"adresse\": \"14 rue Grenette\"}, {\"nom\": \"Handicap Car\",'
++ '\"adresse\": \"1 cours Albert Thomas\"}, {\"nom\": \"Cap Confluent'
++ 'Location de bateaux sans permis\", \"adresse\": \"9 quai Antoine'
++ 'Riboud\"}, {\"nom\": \"Europcar\", \"adresse\": \"Gare de Perrache\"},'
++ '{\"nom\": \"Europcar\", \"adresse\": \"A\\u00e9roport St'
++ 'Exup\\u00e9ry\"}, {\"nom\": \"Europcar\", \"adresse\": \"Gare de la'
++ 'Part-Dieu : 40 rue Villette\"}], "Film d\'action": [], "La Bifliste":'
++ '[], "Lecture": [{\"nom\": \"Ensemble Relecture et Cr\\u00e9ation\",'
++ '\"adresse\": \"4 rue du 24 mars 1852\"}, {\"nom\": \"Soci\\u00e9t\\u00e9'
++ 'de Lecture\", \"adresse\": \"39 bis rue de Marseille\"}], "Le'
++ 'Loir-et-Cher": [], "Codes du Football": [], "INSA Lyon": [],'
++ '"Sheldon Cooper": [], "Rugbiere Efrei-Rugby": [], "J\'\u00e9coute'
++ 'Rien": [], "Pour qu\'Aur\u00e9lien (Augustin Thierry) s\'en sorte!'
++ '<3": [], "Pour les Ha\u00eftiens : 1 Fan = 1 \u20ac": [],'
++ '"Plan\u00e8te Rencontre": [], "Raquettes INSA Club": [],'
++ '"Loups-Garous de Thiercelieux": [], "Saint Gervais la For\u00eat":'
++ '[], "Forum Organisation": [], "12 fa\u00e7ons romantiques de'
++ 'd\u00e9clarer son amour \u00e0 une fille <3": [], "Section'
++ 'Internationale Forum Rh\u00f4ne Alpes": [], "Millenium": [], "Espace'
++ 'Ados Saint Gervais La For\u00eat": [], "Carrefour Maghr\u00e9bin":'
++ '[], "AS INSA Lyon": [], "Singel Hotel in Amsterdam": [],'
++ '"Ultimate": [], "Les fans de \Bob Lennon\": [], "Parc de la'
++ 'T\u00eate d\'or": [{\"nom\": \"Le Jardin Botanique et la Roseraie au'
++ 'Parc de la T\\u00eate d\'Or\", \"adresse\": \"Parc de la t\\u00eate'
++ 'd\'or\"}, {\"nom\": \"Loisirs au Parc de la T\\u00eate d\'Or\",'
++ '\"adresse\": \"Bateaux & karts : entr\\u00e9e par le bd'
++ 'Stalingrad\"}, {\"nom\": \"Guignol au Parc de la T\\u00eate d\'Or :'
++ 'Th\\u00e9atre du Vieux Lyon et du Parc\", \"adresse\": \"Place de'
++ 'Guignol\"}, {\"nom\": \"Sports au Parc de la T\\u00eate d\'Or\",'
++ '\"adresse\": \"Place du G\\u00e9n\\u00e9ral Leclerc\"}, {\"nom\": \"Lac'
++ 'du Parc de la T\\u00eate d\'Or - Embarcad\\u00e8re\", \"adresse\":'
++ '\"Place du G\\u00e9n\\u00e9ral Leclerc\"}, {\"nom\": \"La Roseraie du'
++ 'Parc de la T\\u00eate d\'Or\", \"adresse\": \"All\\u00e9e Achille'
++ 'Lignon\"}, {\"nom\": \"Soci\\u00e9t\\u00e9 Lyonnaise d\'Horticulture au'
++ 'Parc de la T\\u00eate d\'Or\", \"adresse\": \"Parc de la T\\u00eate'
++ 'd\'Or\"}, {\"nom\": \"Transports touristiques au Parc de la T\\u00eate'
++ 'd\'Or\", \"adresse\": \"Parc de la T\\u00eate d\'Or\"}, {\"nom\": \"Parc'
++ 'de la T\\u00eate d\'Or\", \"adresse\": \"Place du G\\u00e9n\\u00e9ral'
++ 'Leclerc (entr\\u00e9e principale)\"}], "Herbert le Marine": [],'
++ '"ZeratoR": [], "Forum Rh\u00f4ne-Alpes": [], "Luxury Lifestyle":'
++ '[], "BdMeuh": [], "Heroic fantasy": [], "Chips et Noi": [],'
++ '"Pomf et Thud": [], "ASUS Republic of Gamers": [], "Trolls de Geek":'
++ '[], "Coll\u00e8ge Et Dodo": [], "InSecurity": [], "Playlist.CDP":'
++ '[], "Eclypsia": [], "INSA Airsoft": [], "Fragiliste": [], "Game'
++ 'One": [], "Swagg Man": [], "D\u00e9partement informatique de l\'INSA'
++ 'Lyon": [], "Noxer": [], "Handball": [{\"nom\": \"Comit\\u00e9 du'
++ 'Rh\\u00f4ne et Ligue du Lyonnais de Handball\", \"adresse\": \"Ligue du'
++ 'Lyonnais : 382 rue Garibaldi\"}], "L\'Insatiable": [], "Very Bad'
++ 'List": []}'
+
+			var JSONResFull = JSON.parse(jsonRes2);
+			treatmentVersion2(JSONResFull);
+
+			//$('#modalAttente').modal('hide');
 		  }
 		  else {
-			  console.log("erreur token");
-			alert("access Token undefined, connect to Facebook");
-		  }
-		  
-        });
-
-
+			alert("Access Token indéfini, veuillez vous connecter à Facebook");
+		  }	 
       }
 	  
 	  // Recuperation du JSON via requete sur le serveur
@@ -235,18 +294,16 @@ function logout() {
 			var xmlhttp = new XMLHttpRequest();
 			//https://cors-anywhere.herokuapp.com/http://example.com
 			var url = "http://172.17.0.1:5000/engine?token="+accessToken;		
-			console.log("requete seerver");
-			//var params = "token="+accessToken;
 			console.log(url);
 
 			xmlhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					var JSONtab = JSON.parse(this.responseText);
-					treatment(JSONtab);
+					//treatment(JSONtab);
+					treatmentVersion2(JSONtab);
 				}
 			};
 			xmlhttp.open("GET", url, true);
-			//xmlhttp.setRequestHeader("Access-Control-Allow-Origin", "*");
 			xmlhttp.send();
 	  }
 	  
@@ -255,9 +312,6 @@ function logout() {
 	
 	function treatment(JSONtab) {
 	
-		// Traitement du JSON
-		//var JSONArray = '[{"nom":"Vélonaute Tête dOr", "adresse":"35 rue Tronchet"}, {"nom":"Hôtel Tête dOr", "adresse":"62 rue Garibaldi"}, {"nom": "Charpennes Tête d\'or", "adresse": "6 Rue Bellecombe"}, {"nom": "Le Jardin Botanique et la Roseraie au Parc de la Tête d\'Or", "adresse": "Parc de la tête d\'or"}]';
-		//var JSONtab = JSON.parse(JSONArray);
 		
 		for (var i = 0; i < JSONtab.length; i++){
 			var obj = JSONtab[i];
@@ -271,6 +325,7 @@ function logout() {
 			(function(nom) {
 				geocoder.geocode( { 'address' : address }, function( results ) {
 
+				
 					var marker = new google.maps.Marker( {
 						map: map,
 						position: results[0].geometry.location,
@@ -291,13 +346,148 @@ function logout() {
 					
 						infowindow.open(map, marker);
 					});
-
+					
+					markers.push(marker);
+					
 				});
 			})(nom);
 			
 		}	
 	}
 	
+	function treatmentVersion2(JSONtab) {
+		
+		var listeDesLikes = Object.keys(JSONtab);
+		var compteur = 0;
+		for (var i = 0; i < listeDesLikes.length; i++){
+			var name = listeDesLikes[i];
+			var tableauObjet = JSONtab[name];
+			
+			console.log(name);
+			console.log(tableauObjet);
+			
+			//document.getElementById('resultats').innerHTML += "<p> Nom du Like : "+ name + "</p>";
+			
+			if(tableauObjet.length!=0)
+			{
+				compteur++;
+				var lettre= '';
+				var option1 = '';
+				var option2 = '';
+				
+				<!-- Interverti fond blanc et gris. Et gauche et droite.-->
+				if(compteur%2==0) { lettre='b'; } else { lettre = 'a';}
+				if(lettre=='b') {option1='col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6';option2='col-lg-5 col-sm-pull-6 col-sm-6';} 
+				else if (lettre=='a') {option1='col-lg-5 col-sm-6';option2='col-lg-5 col-lg-offset-2 col-sm-6';}
+				
+				
+				document.getElementById('listeLikes').innerHTML +=
+					' <h3> '+ name +'</h3> ';
+				
+				var divGen = document.createElement("div");
+				divGen.className = "content-section-"+lettre;
+				var divContainer = document.createElement("div");
+				divContainer.className = "container";
+				var divRow = document.createElement("div");
+				divRow.className = "row";
+				var divCol1 = document.createElement("div");
+				divCol1.className = option1;
+				var divh21 = document.createElement("h2");
+				divh21.className = "section-heading";
+				divh21.innerHTML = name;
+				var divhr1 = document.createElement("hr");
+				divhr1.className = "section-heading-spacer";
+				var divCol2 = document.createElement("div");
+				divCol2.className = option2;
+				var divh22 = document.createElement("h2");
+				divh22.className = "lead";
+				var divSpecial = document.createElement("div");
+				divSpecial.id = name;
+				
+				divCol1.appendChild(divh21);
+				divCol1.appendChild(divhr1);
+				
+				divh22.appendChild(divSpecial)
+				divCol2.appendChild(divh22);
+				
+				divRow.appendChild(divCol1);
+				divRow.appendChild(divCol2);
+				
+				divContainer.appendChild(divRow);
+				divGen.appendChild(divContainer);
+				document.getElementById('listeContenu').appendChild(divGen);
+				
+				/*
+				document.getElementById('listeContenu').innerHTML += '<div class="content-section-'+lettre+'">'
+						+'<div class="container">'
+							+'<div class="row">'
+								+'<div class=" '+ option1 +' ">'
+									+'<h2 class="section-heading">'+ name +'</h2>'
+									+'<hr class="section-heading-spacer">'
+									+'<div class="clearfix"></div>'
+								+'</div>'
+								
+								+'<div class=" '+ option2 +' ">'
+									+'<h2 class="lead"><div id="'+name+'"></div></h2>'
+								+'</div>'
+							+'</div>'
+
+						+'</div>'
+						<!-- /.container -->
+
+					+'</div>';
+				*/
+				//document.getElementById('resultats').innerHTML += "<p> "+ name + "</p>";
+				
+				for (var j = 0; j < tableauObjet.length; j++)
+				{
+					var obj = tableauObjet[j];
+					nom = obj["nom"];
+					console.log(nom);
+					address = obj["adresse"];
+					address = address + ", Lyon";
+					
+					document.getElementById(name).innerHTML += '<p class="marge"> '+ nom + '</p>';
+					console.log("Juste avant geocoding");
+					(function(nom) {
+						geocoder.geocode( { 'address' : address }, function( results ) {
+							
+							if(results != null) {
+								console.log("Result NON NULL");
+							var marker = new google.maps.Marker( {
+								map: map,
+								position: results[0].geometry.location,
+								title: nom,
+								animation: google.maps.Animation.DROP
+							});
+								console.log("MARKER CREE");
+							var infowindow = new google.maps.InfoWindow({
+								content: nom
+							});
+							
+							marker.addListener('click', function() {
+								if( prev_infowindow ) {
+								   prev_infowindow.close();
+								}
+
+								prev_infowindow = infowindow;
+							
+								infowindow.open(map, marker);
+							});
+							
+							markers.push(marker);
+							}
+							else {
+								console.log("Result NULL");
+							}
+						});
+					})(nom);
+					
+				}
+			}
+		}
+	
+	}
 	 
 	function treatmentTest() {
 	
@@ -343,15 +533,28 @@ function logout() {
 			
 		}				
 	}
+	
+	var markers = [];
+	
+	function setMapOnAll(map) {
+		for(var i = 0; i<markers.length;i++)
+		{
+			markers[i].setMap(map);
+		}
+	}
+	
+	function clearMarkers() {
+		setMapOnAll(null);
+	}
 
 
 
 </script>
 <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDujvJUa2Z4bGERt9bEU634CsQM6BxJ_v8&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO50zYrWde7FTwDdm-UOSjwBYoh_3MDL0&callback=initMap">
 </script>
 
-    <!-- Header -->
+    <!-- Header AIzaSyDujvJUa2Z4bGERt9bEU634CsQM6BxJ_v8-->
     <a name="about"></a>
     <div class="intro-header">
         <div class="container">
@@ -377,11 +580,19 @@ function logout() {
                             </li>
 
                         </ul>
+                        <div id="btnFBLogout">
 						<ul class="list-inline intro-social-buttons">
 							<li>
-								<div id="btnFBLogout"><a href="#" class="btn btn-default btn-lg" onclick="logout();" ><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Deconnexion</span></a></div>
+								<a href="#" class="btn btn-default btn-lg" onclick="logout();" ><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Deconnexion</span></a>
                             </li>
 						</ul>
+						<br><br>
+						<ul class="list-inline intro-social-buttons">
+							<li>
+								<a href="#services" class="btn btn-default btn-lg" onclick="lancementProfilage();"><i class="glyphicon glyphicon-user fa-fw"></i> <span class="network-name">Lancer le profilage</span></a>
+                            </li>
+						</ul>
+						</div>
                     </div>
                 </div>
             </div>
@@ -393,56 +604,74 @@ function logout() {
     <!-- /.intro-header -->
 
     <!-- Page Content -->
-
-	<a  name="services"></a>
+    
+    <a name="services"></a>
+    <div id="listeContenu">
+		
     <div class="content-section-a">
 
         <div class="container">
             <div class="row">
-                <div class="col-lg-5 col-sm-6">
-                    <hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-
-                    <h2 class="section-heading">Guide de recommandation - Lyon</h2>
-					
-					<div id="floating-panel">
-					  <input id="submit" type="button" value="Geocode">
-					</div>
-
-					
-                    <p class="lead">
-					<div id="status"></div>
-					<div id="resultats"></div>
-					</p>
-					
+                <div class="col-lg-12 text-center">
+					<h1 class="section-heading"> <i class="glyphicon glyphicon-user fa-fw orange"></i> Profil</h1>	
+                    <hr class="hrOrange">
                 </div>
-                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-						<div id="map" style="width:600px;height:450px"></div>
-				</div>
+                
             </div>
+            <div class="row">
+				<div class="col-lg-5 col-sm-6">
+					<div id="status"></div>
+				</div>
+				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
+					<h2 class="section-heading"> <i class="glyphicon glyphicon-thumbs-up fa-fw orange"></i> Centres d'interêt</h2>	
+					<div id="listeLikes"> </div>
+				</div>
+			</div>
         </div>
+        
+        <!--
+
+		  <div class="modal fade" id="modalAttente" role="dialog">
+			<div class="modal-dialog">
+			
+
+			  <div class="modal-content">
+				<div class="modal-body">
+				  <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate fa-fw"></span><span>Profilage en cours ...</span>
+				</div>
+			  </div>
+			  
+			</div>
+		  </div>
+		  -->
+		 
 		
         <!-- /.container -->
 
     </div>
-    <!-- /.content-section-a -->
 
-    
-
-	
     <div class="content-section-b">
 
         <div class="container">
-
+			<div class="row">
+                <div class="col-lg-12 text-center">
+					<h1 class="section-heading"> <i class="glyphicon glyphicon-globe fa-fw orange"></i> Guide de recommandation</h1>	
+                    <hr class="hrOrange">
+                </div>
+            </div>
             <div class="row">
                 <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+					<h2 class="section-heading">Nos propositions de visite</h2>
                     <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
-                    <h2 class="section-heading">3D Device Mockups<br>by PSDCovers</h2>
-                    <p class="lead">Turn your 2D designs into high quality, 3D product shots in seconds using free Photoshop actions by <a target="_blank" href="http://www.psdcovers.com/">PSDCovers</a>! Visit their website to download some of their awesome, free photoshop actions!</p>
+                    <p class="lead"> Suite à nos analyses nous vous recommandons de découvrir et visiter ces lieux, monuments et évenements. <br> 
+                    Nous avons pris soin de vous proposer les meilleures choix dans la ville de Lyon et ses alentours en fonction de vos goûts et préférences.<br>
+                    Pour de plus amples informations veuillez vous dirigez ci-dessous. <br> <br>A bientôt avec AmuseMe <i class="fa fa-smile-o fa-fw orange"></i> </p>
+                    <p id= class="lead"><div id="resultats"></div></p>
                 </div>
+                
                 <div class="col-lg-5 col-sm-pull-6  col-sm-6">
-                    <img class="img-responsive" src="img/dog.png" alt="">
+                    <div id="map" style="width:600px;height:450px"></div>
                 </div>
             </div>
 
@@ -452,27 +681,9 @@ function logout() {
     </div>
     <!-- /.content-section-b -->
 
-    <div class="content-section-a">
+	</div>  <!-- Div listeContenu -->
 
-        <div class="container">
 
-            <div class="row">
-                <div class="col-lg-5 col-sm-6">
-                    <hr class="section-heading-spacer">
-                    <div class="clearfix"></div>
-                    <h2 class="section-heading">Google Web Fonts and<br>Font Awesome Icons</h2>
-                    <p class="lead">This template features the 'Lato' font, part of the <a target="_blank" href="http://www.google.com/fonts">Google Web Font library</a>, as well as <a target="_blank" href="http://fontawesome.io">icons from Font Awesome</a>.</p>
-                </div>
-                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <img class="img-responsive" src="img/phones.png" alt="">
-                </div>
-            </div>
-
-        </div>
-        <!-- /.container -->
-
-    </div>
-    <!-- /.content-section-a -->
 
 	<a  name="contact"></a>
     <div class="banner">

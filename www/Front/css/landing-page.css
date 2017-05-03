@@ -11,8 +11,6 @@ html {
 }
 
 body,
-h1,
-h2,
 h3,
 h4,
 h5,
@@ -21,10 +19,21 @@ h6 {
     font-weight: 700;
 }
 
+h1,h2 {
+	font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.orange {
+	color:#F05F40;
+}
+
 #map {
         height: 100%;
       }
 
+.marge {
+	margin-left: 5em;
+}
 	  
 .topnav {
     font-size: 14px; 
@@ -109,6 +118,7 @@ h6 {
 }
 
 .section-heading {
+	margin-top:0px;
     margin-bottom: 30px;
 }
 
@@ -172,4 +182,32 @@ footer {
 
 p.copyright {
     margin: 15px 0 0;
+}
+
+
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spinWebkit .7s infinite linear;
+    -moz-animation: spinMoz .7s infinite linear;
+}
+
+@-webkit-keyframes spinWebkit {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+@keyframes spinMoz {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+.hrOrange {
+	border-color: #F05F40;
+	border-width:3px;
+	max-width:50px;
+
 }
