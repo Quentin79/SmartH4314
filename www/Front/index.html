@@ -288,7 +288,7 @@ function logout() {
 				document.getElementById('listeContenu').scrollIntoView({block:"start", behavior:"smooth"});
 			});
 			
-			$('#modalAttente').modal('hide');
+			//$('#modalAttente').modal('hide');
 
 		  }
 		  else {
@@ -451,7 +451,7 @@ function logout() {
 					var obj = tableauObjet[j];
 					nom = obj["nom"];
 					console.log(nom);
-					address = obj["adresse"];
+					address = obj["address"];
 					address = address + ", Lyon";
 					
 					document.getElementById(name).innerHTML += '<p class="marge"> '+ nom + '</p>';
@@ -493,7 +493,7 @@ function logout() {
 				}
 			}
 		}
-	
+		$('#modalAttente').modal('hide');
 	}
 	 
 	function treatmentTest() {
