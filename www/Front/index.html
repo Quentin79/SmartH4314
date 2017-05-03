@@ -223,9 +223,9 @@ function logout() {
 			document.getElementById('resultats').innerHTML = "";
 			clearMarkers();
 			// On lance processus
-			//serverRequest();
+			serverRequest();
 			
-			var jsonRes2 = '{"HaloDestiny.net": [], "Les Op\u00e9rateurs": [], "Console": [],"AEDI": [{\"nom\": \"Saxe Gambetta Edison Appartement\", \"adresse\":'
+			/*var jsonRes2 = '{"HaloDestiny.net": [], "Les Op\u00e9rateurs": [], "Console": [],"AEDI": [{\"nom\": \"Saxe Gambetta Edison Appartement\", \"adresse\":'
 + '\"31 rue Edison\"}], "Pc": [{\"nom\": \"R\\u00e9sidence Cap Campus\",'
 + '\"adresse\": \"42-44 rue des Charmettes\"}, {\"nom\": \"Chambre'
 + 'Syndicale des Propri\\u00e9taires et Copropri\\u00e9taires (CSPC)\",'
@@ -278,9 +278,9 @@ function logout() {
 + 'Rh\\u00f4ne et Ligue du Lyonnais de Handball\", \"adresse\": \"Ligue du'
 + 'Lyonnais : 382 rue Garibaldi\"}], "L\'Insatiable": [], "Very Bad'
 + 'List": []}'
-
-			var JSONResFull = JSON.parse(jsonRes2);
-			treatmentVersion2(JSONResFull);
+*/
+		//	var JSONResFull = JSON.parse(jsonRes2);
+			//treatmentVersion2(JSONResFull);
 
 			//$('#modalAttente').modal('hide');
 		  }
@@ -293,7 +293,7 @@ function logout() {
 	function serverRequest() {
 			var xmlhttp = new XMLHttpRequest();
 			//https://cors-anywhere.herokuapp.com/http://example.com
-			var url = "http://172.17.0.1:5000/engine?token="+accessToken;		
+			var url = "http://172.17.0.1:5000/reconiveau2?token="+accessToken;		
 			console.log(url);
 
 			xmlhttp.onreadystatechange = function() {
@@ -444,7 +444,7 @@ function logout() {
 					var obj = tableauObjet[j];
 					nom = obj["nom"];
 					console.log(nom);
-					address = obj["adresse"];
+					address = obj["address"];
 					address = address + ", Lyon";
 					
 					document.getElementById(name).innerHTML += '<p class="marge"> '+ nom + '</p>';

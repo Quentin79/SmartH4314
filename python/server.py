@@ -78,16 +78,16 @@ def level2Recommandations(pagesDescription):
 	# pour chaque likes
 	for key, val in pagesDescription.items() :
 		# on construit une requête dont le text est le like et la description
-		if "description" in val :
-			parameters = {
-			"version" : "2017-02-27",
-			"text": val["name"]+" "+val["description"],
-			"features": {"categories": {"limit" : 1}}}
-		else :	
-			parameters = {
-			"version" : "2017-02-27",
-			"text": val["name"],
-			"features": {"categories": {"limit" : 1}}}
+		#if "description" in val :
+		#	parameters = {
+		#	"version" : "2017-02-27",
+		#	"text": val["name"]+" "+val["description"],
+		#	"features": {"categories": {"limit" : 1}}}
+		#else :	
+		parameters = {
+		"version" : "2017-02-27",
+		"text": val["name"],
+		"features": {"categories": {"limit" : 1}}}
 		
 		# envoie de la requete à watson
 		r = requests.get('https://gateway.watsonplatform.net/natural-language-understanding/api/v1/analyze', params=parameters, auth=('dc479c4a-de18-4be3-9095-8bb3fc537b58','DuxBm28zBvaB'))
