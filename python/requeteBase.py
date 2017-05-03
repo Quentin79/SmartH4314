@@ -30,7 +30,7 @@ def fetchDataSingle (db, like):
 	query = "SELECT nom,adresse FROM public.\"DataGL4\" WHERE nom_normalize like '%"+likeNorma+"%' "
 	q=db.query(query)
 
-	return json.dumps(q.dictresult())
+	return q.dictresult()
 
 #db = DB(dbname='postgres', host='172.17.0.4', port=5432, user='postgres', passwd='admin')
 #listLike = ['Tête d\'or', 'le patineur']

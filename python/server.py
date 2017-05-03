@@ -27,14 +27,17 @@ def main(): #enlever token
 
 	dict_reponse = {}
 	for like in likes :
+		like = like.replace('"', '') #fait planter le front sinon
+		like = like.replace('\'', '')  #fait planter le front sinon
 		rep = fetchDataSingle(db,like)
+	#	return json.dumps(rep)
 		dict_reponse[like]=rep
 
 
 
 	reponse = Response("")
 	reponse.headers['Access-Control-Allow-Origin'] = '*'
-	reponse.data = json.dumps(json_response)
+	reponse.data = json.dumps(dict_reponse)
 	reponse.mimetype = "json"
 	return reponse
 
@@ -53,6 +56,7 @@ def getNoms (db) :
 	return "hello world"
 
 
+print("bonjour") 
 
 
 #main('EAACEdEose0cBADbHU92C4fP13NnLV9ZB7x7qqRiuF5W3fw6ZBZCFZBlx3QhuhgObNiGAJHL36pw8ujwLKkJAUwEIFJQ4zZAilMw3skQ5wOQLP3vk1ZBDgTDM8pbsNeMClB4Fla1EH6P3AiEwlIANC34SyZCSWGUTdsSZBaEWPyyB9K5ZAVDOZAFpOGetpKZCKhhIA8ZD')
