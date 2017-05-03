@@ -223,7 +223,7 @@ function logout() {
 			document.getElementById('resultats').innerHTML = "";
 			clearMarkers();
 			// On lance processus
-			//serverRequest();
+			serverRequest();
 			
 			var jsonRes2 = '{"HaloDestiny.net": [], "Les Op\u00e9rateurs": [], "Console": [],"AEDI": [{\"nom\": \"Saxe Gambetta Edison Appartement\", \"adresse\":'
 + '\"31 rue Edison\"}], "Pc": [{\"nom\": \"R\\u00e9sidence Cap Campus\",'
@@ -279,8 +279,8 @@ function logout() {
 + 'Lyonnais : 382 rue Garibaldi\"}], "L\'Insatiable": [], "Very Bad'
 + 'List": []}'
 
-			var JSONResFull = JSON.parse(jsonRes2);
-			treatmentVersion2(JSONResFull);
+			//var JSONResFull = JSON.parse(jsonRes2);
+			//treatmentVersion2(JSONResFull);
 
 			//$('#modalAttente').modal('hide');
 		  }
@@ -444,7 +444,7 @@ function logout() {
 					var obj = tableauObjet[j];
 					nom = obj["nom"];
 					console.log(nom);
-					address = obj["adresse"];
+					address = obj["address"];
 					address = address + ", Lyon";
 					
 					document.getElementById(name).innerHTML += '<p class="marge"> '+ nom + '</p>';
