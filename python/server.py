@@ -78,47 +78,70 @@ def level2Recommandations(pagesDescription):
 	# pour chaque likes
 	for key, val in pagesDescription.items() :
 		# on construit une requête dont le text est le like et la description
-		parameters = {
-		"version" : "2017-02-27",
-		"text": val["name"]+" "+val["description"],
-		"features": {"categories": {"limit" : 1}}}
+		if "description" in val :
+			parameters = {
+			"version" : "2017-02-27",
+			"text": val["name"]+" "+val["description"],
+			"features": {"categories": {"limit" : 1}}}
+		else :	
+			parameters = {
+			"version" : "2017-02-27",
+			"text": val["name"],
+			"features": {"categories": {"limit" : 1}}}
+		
 		# envoie de la requete à watson
 		r = requests.get('https://gateway.watsonplatform.net/natural-language-understanding/api/v1/analyze', params=parameters, auth=('dc479c4a-de18-4be3-9095-8bb3fc537b58','DuxBm28zBvaB'))
 
 		jsonObject = r.json()
 		listCtgr = []
+		#return jsonObject
+		try :
+			if jsonObject is not None and 'categories' in jsonObject and len(jsonObject['categories']) >0 :
+				categories = jsonObject['categories'][0]['label']
+				listCtgr = categories.split('/')
+				listCtgr.pop(0)
 
-		if jsonObject['categories'] :
-			categories = jsonObject['categories'][0]['label']
-			listCtgr = categories.split('/')
-			listCtgr.pop(0)
+				listCtgr.extend(['']*(5-len(listCtgr)))
+				
+				nom = val["name"]
+				# on récupère les cétégories
+				param = {
+				'nom': nom,
+				'label0' : listCtgr[0],
+				'label1' : listCtgr[1],
+				'label2' : listCtgr[2],
+				'label3' : listCtgr[3],
+				'label4' : listCtgr[4]
+				}
 
-			listCtgr.extend(['']*(5-len(listCtgr)))
-			
-			nom = val["name"]
-			# on récupère les cétégories
-			param = {
-			'nom': nom,
-			'label0' : listCtgr[0],
-			'label1' : listCtgr[1],
-			'label2' : listCtgr[2],
-			'label3' : listCtgr[3],
-			'label4' : listCtgr[4]
-			}
+				# on ajoute les params courants à la liste d'ontologie
+				# ontologieliste.append(param)
 
-			# on ajoute les params courants à la liste d'ontologie
-			# ontologieliste.append(param)
+				# requête postgres 
+				cur = conn.cursor()
+				if listCtgr[0] =="":
+					listCtgr[0]="#"
+				if listCtgr[1] =="":
+					listCtgr[1]="#"
+				if listCtgr[2] =="":
+					listCtgr[2]="#"
+				if listCtgr[3] =="":
+					listCtgr[3]="#"
+				if listCtgr[4] =="":
+					listCtgr[4]="#"
+				
+				
+				#return "WITH reco as(Select \"DataGL4\".index, nom, adresse, (0+0.2*(\"label0\"= '"+listCtgr[0]+"')::int+0.4*(\"label1\"= '"+listCtgr[1]+"')::int+0.6*(\"label2\"= '"+listCtgr[2]+"')::int+0.8*(\"label3\"= '"+listCtgr[3]+"')::int+1*(\"label4\"= '"+listCtgr[4]+"')::int) AS ressemblanceCoefficient from public.\"GLOntology\", public.\"DataGL4\" Where \"GLOntology\".\"idGL\"=\"DataGL4\".\"index\" )SELECT * FROM reco WHERE ressemblanceCoefficient > 0 ORDER BY ressemblanceCoefficient DESC  limit 3;"
 
-			# requête postgres 
-			cur = conn.cursor()
+				cur.execute("WITH reco as(Select \"DataGL4\".index, nom, adresse, (0+0.2*(\"label0\"= '"+listCtgr[0]+"')::int+0.4*(\"label1\"= '"+listCtgr[1]+"')::int+0.6*(\"label2\"= '"+listCtgr[2]+"')::int+0.8*(\"label3\"= '"+listCtgr[3]+"')::int+1*(\"label4\"= '"+listCtgr[4]+"')::int) AS ressemblanceCoefficient from public.\"GLOntology\", public.\"DataGL4\" Where \"GLOntology\".\"idGL\"=\"DataGL4\".\"index\" )SELECT * FROM reco WHERE ressemblanceCoefficient > 0 ORDER BY ressemblanceCoefficient DESC  limit 3;")
 
-			cur.execute("WITH reco as(Select \"DataGL4\".id, nom, adresse, (0+0.2*(\"l1\"= '"+listCtgr[0]+"')::int+0.4*(\"l2\"= '"+listCtgr[1]+"')::int+0.6*(\"l3\"= '"+listCtgr[2]+"')::int+0.8*(\"l4\"= '"+listCtgr[3]+"')::int+1*(\"l5\"= '"+listCtgr[4]+"')::int) AS ressemblanceCoefficient from public.\"hierarchie\", public.\"DataGL4\" Where \"hierarchie\".id=\"DataGL4\".index LIMIT 2)SELECT * FROM reco WHERE ressemblanceCoefficient > 0;")
+				rows = cur.fetchall()
 
-			rows = cur.fetchall()
-
-			recommandation[nom]=[]
-			for row in rows:
-				recommandation[nom].append({"nom":row[1], "address":row[2], "coefficient": float(row[3])})
+				recommandation[nom]=[]
+				for row in rows:
+					recommandation[nom].append({"nom":row[1], "address":row[2], "coefficient": float(row[3])})
+		except :
+			return jsonObject
 	return recommandation
 
 
