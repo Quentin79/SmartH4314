@@ -171,8 +171,7 @@
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
-      document.getElementById('status').innerHTML =
-        ' <h2 class="section-heading"> <i class="glyphicon glyphicon-info-sign fa-fw orange"></i> '+ response.name +'</h2> <br> ';
+      document.getElementById('nomUtil').innerHTML = '<h1 class="section-heading"> <i class="glyphicon glyphicon-user fa-fw orange"></i> Profil - '+response.name+'</h1>';
 		return response.id;
     });
 	
@@ -367,9 +366,10 @@ function logout() {
 		var listeDesLikes = Object.keys(JSONtab);
 		var compteur = 0;
 		for (var i = 0; i < listeDesLikes.length; i++){
+			console.log(i);
 			var name = listeDesLikes[i];
+			console.log(name);
 			var tableauObjet = JSONtab[name];
-			
 			console.log(name);
 			console.log(tableauObjet);
 			
@@ -387,9 +387,13 @@ function logout() {
 				if(lettre=='b') {option1='col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6';option2='col-lg-5 col-sm-pull-6 col-sm-6';} 
 				else if (lettre=='a') {option1='col-lg-5 col-sm-6';option2='col-lg-5 col-lg-offset-2 col-sm-6';}
 				
-				
-				document.getElementById('listeLikes').innerHTML +=
-					' <h3> '+ name +'</h3> ';
+				if(compteur%2==0) {
+				document.getElementById('listeLikes2').innerHTML +=
+					' <h4> '+ name +'</h4> ';
+				} else {
+				document.getElementById('listeLikes1').innerHTML +=
+					' <h4> '+ name +'</h4> ';
+				}
 				
 				var divGen = document.createElement("div");
 				divGen.className = "content-section-"+lettre;
@@ -450,24 +454,41 @@ function logout() {
 				{
 					var obj = tableauObjet[j];
 					nom = obj["nom"];
-					console.log(nom);
+					
 					address = obj["address"];
 					address = address + ", Lyon";
 					
-					document.getElementById(name).innerHTML += '<p class="marge"> '+ nom + '</p>';
-					console.log("Juste avant geocoding");
+					var coefficient = obj["coefficient"];
+					console.log("coeff :" + coefficient);
+					
+					var coeffDecimal = parseFloat(coefficient);
+					
+					if(coeffDecimal < 0.6 ) {
+						document.getElementById(name).innerHTML += '<h3> '+ nom +' <span class="label label-danger"> '+ coefficient + '</span> </h3>';
+					} else if (coeffDecimal >= 0.6 && coeffDecimal < 1.2) {
+						document.getElementById(name).innerHTML += '<h3> '+ nom +' <span class="label label-warning"> '+ coefficient + '</span> </h3>';
+					} else if (coeffDecimal >= 1.2 && coeffDecimal < 1.8) {
+						document.getElementById(name).innerHTML += '<h3> '+ nom +' <span class="label label-default"> '+ coefficient + '</span> </h3>';
+					} else if (coeffDecimal >= 1.8 && coeffDecimal < 2) {
+						document.getElementById(name).innerHTML += '<h3> '+ nom +' <span class="label label-info"> '+ coefficient + '</span> </h3>';
+					} else {
+						document.getElementById(name).innerHTML += '<h3> '+ nom +' <span class="label label-success"> '+ coefficient + '</span> </h3>';
+					}
+					
+					//document.getElementById(name).innerHTML += '<span class="badge badge-success"> '+ coefficient + '</span> </h3>';
+					
 					(function(nom) {
 						geocoder.geocode( { 'address' : address }, function( results ) {
 							
 							if(results != null) {
-								console.log("Result NON NULL");
+
 							var marker = new google.maps.Marker( {
 								map: map,
 								position: results[0].geometry.location,
 								title: nom,
 								animation: google.maps.Animation.DROP
 							});
-								console.log("MARKER CREE");
+
 							var infowindow = new google.maps.InfoWindow({
 								content: nom
 							});
@@ -508,6 +529,7 @@ function logout() {
 			
 			address = obj["adresse"];
 			address = address + ", Lyon";			
+			
 			
 			document.getElementById('resultats').innerHTML += "<p>"+ nom + "</p>";
 			
@@ -558,7 +580,7 @@ function logout() {
 
 </script>
 <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAO50zYrWde7FTwDdm-UOSjwBYoh_3MDL0&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDujvJUa2Z4bGERt9bEU634CsQM6BxJ_v8&callback=initMap">
 </script>
 
     <!-- Header AIzaSyDujvJUa2Z4bGERt9bEU634CsQM6BxJ_v8-->
@@ -577,10 +599,10 @@ function logout() {
                                 <a href="#" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
                             </li>
                             <li>
-                                <a href="#" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                                <a href="#" class="btn btn-default btn-lg"><i class="fa fa-google-plus fa-fw"></i> <span class="network-name">Google +</span></a>
                             </li>
                             <li>
-                                <a href="#" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
+                                <a href="#" class="btn btn-default btn-lg"><i class="fa fa-instagram fa-fw"></i> <span class="network-name">Instagram</span></a>
                             </li>
 							<li>
 								<div id="btnFBLogin"><a href="#" class="btn btn-default btn-lg" onclick="fb_login();"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Facebook</span></a></div>
@@ -620,18 +642,28 @@ function logout() {
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-					<h1 class="section-heading"> <i class="glyphicon glyphicon-user fa-fw orange"></i> Profil</h1>	
+					<div id="nomUtil"><h1 class="section-heading"> <i class="glyphicon glyphicon-user fa-fw orange"></i> Profil</h1></div>	
                     <hr class="hrOrange">
                 </div>
-                
             </div>
             <div class="row">
+                <div class="col-lg-5 col-sm-6">
+					<h2 class="section-heading"> <i class="glyphicon glyphicon-thumbs-up fa-fw orange"></i> Centres d'interêt</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+					<div id="status"></div>	
+                </div>
+            </div>
+            
+            
+            <div class="row">
 				<div class="col-lg-5 col-sm-6">
-					<div id="status"></div>
+					<div id="listeLikes1"> </div>
 				</div>
 				<div class="col-lg-5 col-lg-offset-2 col-sm-6">
-					<h2 class="section-heading"> <i class="glyphicon glyphicon-thumbs-up fa-fw orange"></i> Centres d'interêt</h2>	
-					<div id="listeLikes"> </div>
+					<div id="listeLikes2"> </div>
 				</div>
 			</div>
         </div>
@@ -640,14 +672,14 @@ function logout() {
 
 		  <div class="modal fade" id="modalAttente" role="dialog">
 			<div class="modal-dialog">
-			
-
 			  <div class="modal-content">
-				<div class="modal-body">
-				  <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate fa-fw"></span><span>Profilage en cours ...</span>
+				 <div class="modal-header">
+				  <h3 class="modal-title"> <span class="glyphicon glyphicon-info-sign fa-fw"></span><span> Veuillez patienter</span></h3>
 				</div>
-			  </div>
-			  
+				<div class="modal-body">
+				  <h2><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate fa-fw"></span><span> Profilage en cours ...</span></h2>
+				</div>
+			  </div> 
 			</div>
 		  </div>
 		  

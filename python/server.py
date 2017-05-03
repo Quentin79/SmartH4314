@@ -90,7 +90,7 @@ def level2Recommandations(pagesDescription):
 		"features": {"categories": {"limit" : 1}}}
 		
 		# envoie de la requete à watson
-		r = requests.get('https://gateway.watsonplatform.net/natural-language-understanding/api/v1/analyze', params=parameters, auth=('dc479c4a-de18-4be3-9095-8bb3fc537b58','DuxBm28zBvaB'))
+		r = requests.get('https://gateway.watsonplatform.net/natural-language-understanding/api/v1/analyze', params=parameters, auth=('6cffec81-ee2d-4144-907f-3de67fc6aa5f','Jo14Zn0mR1jw'))
 
 		jsonObject = r.json()
 		listCtgr = []
